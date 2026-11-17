@@ -1,0 +1,1 @@
+import {Router} from "express";import {stats} from "../controllers/dashboardController.js";const r=Router();r.get("/stats",stats);export default r;

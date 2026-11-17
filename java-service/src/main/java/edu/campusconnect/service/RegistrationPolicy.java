@@ -1,0 +1,1 @@
+package edu.campusconnect.service;import edu.campusconnect.dto.RegistrationValidationRequest;import edu.campusconnect.dto.ValidationResponse;public interface RegistrationPolicy<T>{ValidationResponse validate(T request); }

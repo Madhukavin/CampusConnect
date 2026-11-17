@@ -1,0 +1,1 @@
+package edu.campusconnect.dto;public record ValidationResponse(boolean allowed,String message,String eventLabel){}

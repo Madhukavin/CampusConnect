@@ -1,0 +1,1 @@
+import {Router} from "express";import {create,all} from "../controllers/registrationController.js";const r=Router();r.post("/",create);r.get("/",all);export default r;
