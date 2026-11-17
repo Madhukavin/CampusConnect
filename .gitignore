@@ -1,0 +1,34 @@
+# Dependencies
+**/node_modules/
+
+# Frontend builds and local Vite files
+client/dist/
+client/.vite/
+client/vite-*.log
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Java / Maven build output and local dependency cache
+java-service/target/
+tools/apache-maven-*/
+tools/m2-repository/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# IDE settings
+.idea/
+.vscode/
+*.iml
+
+# Operating system files
+.DS_Store
+Thumbs.db
+Desktop.ini

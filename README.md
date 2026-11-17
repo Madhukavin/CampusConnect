@@ -1,69 +1,98 @@
-# CampusConnect – Integrated MERN + Core Java
+# CampusConnect
 
-A college event-management mini project. React is the UI, Express is the Node API gateway and MongoDB persistence layer, and a Spring Boot service runs the Java business rules.
+CampusConnect is a lightweight college event-management system built for a Java mini-project. React provides the interface, Express is the API gateway and MongoDB layer, and Spring Boot runs the Core Java registration rules.
+
+## Architecture
+
+`React (5173) → Express API (5000) → Spring Boot Java rules (8080)`
+
+Express stores events and approved registrations in MongoDB. A registration is never stored until the Java API approves it. Express then atomically reserves a seat, so concurrent requests cannot exceed event capacity.
+
+## Project structure
+
+- `client/` — React + Vite UI
+- `server/` — Express routes, MongoDB models, and Java API client
+- `java-service/` — Spring Boot REST API and Core Java domain logic
 
 ## Prerequisites
-- Node.js 18+
-- Java 17+
-- Maven 3.8+ (or use an IDE with Maven support)
-- MongoDB local instance or Atlas URI
 
-## Run order
+- Node.js 18 or later
+- Java 17
+- Maven 3.8 or later
+- MongoDB running locally or an Atlas connection string
 
-### 1. MongoDB
-Start MongoDB locally, or obtain an Atlas connection string.
+## Run the application
 
-### 2. Java Spring Boot service
+1. Start MongoDB locally, or create an Atlas database.
+2. Start the Java service:
+
 ```bash
 cd java-service
 mvn spring-boot:run
 ```
+
 Check `http://localhost:8080/api/java/health`.
 
-### 3. Node / Express API
-In another terminal:
+3. Configure and start Express in a second terminal:
+
 ```bash
 cd server
+copy .env.example .env
 npm install
-```
-Copy `.env.example` to `.env`, update `MONGO_URI` if needed, then:
-```bash
 npm run dev
 ```
-Node runs at `http://localhost:5000`. It calls Java at `http://localhost:8080`.
 
-### 4. React frontend
-In another terminal:
+Update `MONGO_URI` in `.env` when using Atlas. Express starts at `http://localhost:5000`.
+
+4. Start the React client in a third terminal:
+
 ```bash
 cd client
 npm install
 npm run dev
 ```
-Open the Vite URL, normally `http://localhost:5173`.
 
-## Demo flow
-1. Open `/admin` and create an event.
-2. Return to the homepage and open that event.
-3. Register a student.
-4. Express loads the event and current registration count from MongoDB.
-5. Express calls the Spring Boot validation endpoint.
-6. Java applies registration rules and returns approval/rejection.
-7. Express persists an approved registration in MongoDB.
-8. Admin views the registration and dashboard totals.
+Open the Vite address shown in the terminal (normally `http://localhost:5173`).
 
-## OOP mapping
-- Encapsulation: private fields and accessors in `User`, `Event`, `Registration`
-- Inheritance: `Student` and `Admin` extend `User`; event types extend `Event`
-- Abstraction: abstract `User` and `Event`
-- Polymorphism: overridden `getRole`, `getEventType`, `getDisplayLabel`
-- Interfaces: `RegistrationPolicy<T>`
-- Generics: `RegistrationPolicy<T>`
-- Collections: `List<Registration>` in `RegistrationService`
-- Exception handling: `EventFullException`, `GlobalExceptionHandler`, Express error handling
-- Multithreading: `NotificationService` uses a fixed thread pool and async tasks
+## API endpoints
 
-## Important notes / limitations
-- Java performs the authoritative business-rule validation; Node persists approved registrations. This is a lightweight educational integration, not a production-safe distributed transaction.
-- The registration count check can race if two requests arrive simultaneously. For production, move capacity enforcement into an atomic MongoDB operation or a transaction with a unique constraint and retry.
-- Admin endpoints have no authentication in this mini-project. Do not expose this demo publicly without adding authentication/authorization.
-- Event category mapping in the Java example uses a simple title heuristic to demonstrate polymorphism. For a polished submission, add an explicit `category` field to the Java event DTO and choose the subtype from it.
+| Method | Endpoint | Purpose |
+| --- | --- | --- |
+| GET | `/api/events` | List events |
+| GET | `/api/events/:id` | Get one event |
+| POST | `/api/events` | Create an event |
+| PUT | `/api/events/:id` | Update an event |
+| DELETE | `/api/events/:id` | Delete an event and its registrations |
+| POST | `/api/registrations` | Validate through Java and save a registration |
+| GET | `/api/registrations` | List student registrations |
+| GET | `/api/dashboard/stats` | Dashboard totals |
+| POST | `:8080/api/java/registrations/validate` | Java business-rule endpoint |
+
+## Demo workflow
+
+1. Go to **Admin dashboard** and create an event.
+2. On the home page, search or filter events and open one.
+3. Submit student details to register.
+4. Express checks for the event and duplicates, sends event details to Java, and only saves Java-approved registrations.
+5. Try the same register number again to demonstrate duplicate prevention. Create a capacity-one event to demonstrate the full-event error.
+6. Return to Admin to show registrations and live dashboard totals.
+
+## Core Java OOP mapping
+
+| Concept | Implementation |
+| --- | --- |
+| Encapsulation | private fields/getters and validation in `model/User.java` |
+| Inheritance | `Student` and `Admin` extend `User` |
+| Abstraction | abstract `User` and `Event` |
+| Polymorphism | `TechnicalEvent` and `CulturalEvent` override event methods |
+| Interface + generics | `RegistrationPolicy<T>` implemented by `RegistrationService` |
+| Collections | `List<Registration>` in `RegistrationService` |
+| Exceptions | `EventFullException` and `GlobalExceptionHandler` |
+| Multithreading | `NotificationService` submits asynchronous notification tasks to an `ExecutorService` |
+
+## Team split
+
+- Member 1: React pages/components and Java/Spring Boot business logic.
+- Member 2: Express API, MongoDB models, routes/controllers, and Node-to-Java integration.
+
+This demo intentionally has no authentication. Do not expose its admin routes publicly without adding authorization.
