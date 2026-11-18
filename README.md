@@ -60,6 +60,8 @@ Open the Vite address shown in the terminal (normally `http://localhost:5173`).
 | --- | --- | --- |
 | GET | `/api/events` | List events |
 | GET | `/api/events/:id` | Get one event |
+| POST | `/api/auth/signup` | Create a student account |
+| POST | `/api/auth/signin` | Sign in with register number and password |
 | POST | `/api/events` | Create an event |
 | PUT | `/api/events/:id` | Update an event |
 | DELETE | `/api/events/:id` | Delete an event and its registrations |
@@ -79,10 +81,12 @@ Open the Vite address shown in the terminal (normally `http://localhost:5173`).
 
 ## Demo login
 
-- **Student:** select Student and enter a name, register number, department, and email. The student is sent to the events dashboard, and those details prefill the event registration form.
+- **Student sign up:** select Student → Sign up, then enter name, register number, department, email, and password. The student details are stored in MongoDB's `students` collection; the password is stored as a salted hash, never in plain text.
+- **Student sign in:** select Student → Sign in. It intentionally contains only **Username (Register number)** and **Password**. The password field is hidden by default and has a Show/Hide button.
+- After successful student sign-in, the events dashboard opens and the stored student details prefill the event registration form.
 - **Admin:** select Admin and use `admin@campusconnect.edu` with password `admin123`. The admin is sent to the admin dashboard.
 
-This login is intentionally client-side only for the mini-project demonstration. It controls the React interface and is not a replacement for production authentication.
+Admin login remains a client-side demo credential. Student accounts are database-backed for the mini-project; production deployments should additionally use server-issued sessions or JWTs and protect every API route.
 
 ## Core Java OOP mapping
 

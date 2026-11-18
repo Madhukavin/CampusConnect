@@ -1,1 +1,27 @@
-import express from "express";import cors from "cors";import dotenv from "dotenv";import connectDB from "./config/db.js";import events from "./routes/eventRoutes.js";import registrations from "./routes/registrationRoutes.js";import dashboard from "./routes/dashboardRoutes.js";dotenv.config();const app=express();app.use(cors());app.use(express.json());app.get("/",(req,res)=>res.send("CampusConnect Node API is running"));app.use("/api/events",events);app.use("/api/registrations",registrations);app.use("/api/dashboard",dashboard);app.use((req,res)=>res.status(404).json({message:"Route not found"}));const port=process.env.PORT||5000;connectDB().then(()=>app.listen(port,()=>console.log(`Node API running at ${port}`))).catch(e=>{console.error(e.message);process.exit(1)});
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+import connectDB from "./config/db.js";
+import events from "./routes/eventRoutes.js";
+import registrations from "./routes/registrationRoutes.js";
+import dashboard from "./routes/dashboardRoutes.js";
+import auth from "./routes/authRoutes.js";
+
+dotenv.config();
+const app = express();
+app.use(cors());
+app.use(express.json());
+app.get("/", (req, res) => res.send("CampusConnect Node API is running"));
+app.use("/api/auth", auth);
+app.use("/api/events", events);
+app.use("/api/registrations", registrations);
+app.use("/api/dashboard", dashboard);
+app.use((req, res) => res.status(404).json({ message: "Route not found" }));
+
+const port = process.env.PORT || 5000;
+connectDB()
+  .then(() => app.listen(port, () => console.log(`Node API running at ${port}`)))
+  .catch(error => {
+    console.error(error.message);
+    process.exit(1);
+  });
