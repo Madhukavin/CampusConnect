@@ -77,6 +77,13 @@ Open the Vite address shown in the terminal (normally `http://localhost:5173`).
 5. Try the same register number again to demonstrate duplicate prevention. Create a capacity-one event to demonstrate the full-event error.
 6. Return to Admin to show registrations and live dashboard totals.
 
+## Demo login
+
+- **Student:** select Student and enter a name, register number, department, and email. The student is sent to the events dashboard, and those details prefill the event registration form.
+- **Admin:** select Admin and use `admin@campusconnect.edu` with password `admin123`. The admin is sent to the admin dashboard.
+
+This login is intentionally client-side only for the mini-project demonstration. It controls the React interface and is not a replacement for production authentication.
+
 ## Core Java OOP mapping
 
 | Concept | Implementation |
