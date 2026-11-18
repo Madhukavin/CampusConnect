@@ -1,1 +1,12 @@
-package edu.campusconnect.model;public class Admin extends User{public Admin(String id,String name,String email){super(id,name,email);}@Override public String getRole(){return "ADMIN";}}
+package edu.campusconnect.model;
+
+public class Admin extends User {
+  public Admin(String id, String name, String email) {
+    super(id, name, email);
+  }
+
+  @Override
+  public String getRole() {
+    return "ADMIN";
+  }
+}

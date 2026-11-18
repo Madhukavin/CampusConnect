@@ -1,1 +1,47 @@
-package edu.campusconnect.service;import edu.campusconnect.dto.*;import edu.campusconnect.exception.EventFullException;import edu.campusconnect.model.*;import org.springframework.stereotype.Service;import java.time.LocalDate;import java.util.ArrayList;import java.util.List;@Service public class RegistrationService implements RegistrationPolicy<RegistrationValidationRequest>{private final List<Registration> recentInProcess=new ArrayList<>();private final NotificationService notifications;public RegistrationService(NotificationService notifications){this.notifications=notifications;}@Override public ValidationResponse validate(RegistrationValidationRequest r){if(r.alreadyRegistered())throw new IllegalArgumentException("Student is already registered for this event");if(r.event().date().isBefore(LocalDate.now()))throw new IllegalArgumentException("Registration is closed for past events");if(r.currentRegistrations()>=r.event().capacity())throw new EventFullException("This event is full");Student student=new Student("TEMP",r.studentName(),r.email(),r.registerNumber(),r.department());Event event=createEvent(r);Registration registration=new Registration(student,event);synchronized(recentInProcess){recentInProcess.add(registration);}notifications.sendAsync("Registration approved for "+student.getName()+" in "+event.getTitle());return new ValidationResponse(true,"Registration approved by Java business logic",event.getDisplayLabel());}private Event createEvent(RegistrationValidationRequest r){String category=r.event().category().toLowerCase();if(category.contains("cultural"))return new CulturalEvent(r.event().id(),r.event().title(),r.event().capacity());return new TechnicalEvent(r.event().id(),r.event().title(),r.event().capacity());}}
+package edu.campusconnect.service;
+
+import edu.campusconnect.dto.*;
+import edu.campusconnect.exception.EventFullException;
+import edu.campusconnect.model.*;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import org.springframework.stereotype.Service;
+
+@Service
+public class RegistrationService implements RegistrationPolicy<RegistrationValidationRequest> {
+  private final List<Registration> recentInProcess = new ArrayList<>();
+  private final NotificationService notifications;
+
+  public RegistrationService(NotificationService notifications) {
+    this.notifications = notifications;
+  }
+
+  @Override
+  public ValidationResponse validate(RegistrationValidationRequest r) {
+    if (r.alreadyRegistered())
+      throw new IllegalArgumentException("Student is already registered for this event");
+    if (r.event().date().isBefore(LocalDate.now()))
+      throw new IllegalArgumentException("Registration is closed for past events");
+    if (r.currentRegistrations() >= r.event().capacity())
+      throw new EventFullException("This event is full");
+    Student student =
+        new Student("TEMP", r.studentName(), r.email(), r.registerNumber(), r.department());
+    Event event = createEvent(r);
+    Registration registration = new Registration(student, event);
+    synchronized (recentInProcess) {
+      recentInProcess.add(registration);
+    }
+    notifications.sendAsync(
+        "Registration approved for " + student.getName() + " in " + event.getTitle());
+    return new ValidationResponse(
+        true, "Registration approved by Java business logic", event.getDisplayLabel());
+  }
+
+  private Event createEvent(RegistrationValidationRequest r) {
+    String category = r.event().category().toLowerCase();
+    if (category.contains("cultural"))
+      return new CulturalEvent(r.event().id(), r.event().title(), r.event().capacity());
+    return new TechnicalEvent(r.event().id(), r.event().title(), r.event().capacity());
+  }
+}

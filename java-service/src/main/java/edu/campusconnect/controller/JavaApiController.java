@@ -1,1 +1,26 @@
-package edu.campusconnect.controller;import edu.campusconnect.dto.*;import edu.campusconnect.service.RegistrationService;import jakarta.validation.Valid;import org.springframework.web.bind.annotation.*;@RestController @RequestMapping("/api/java") public class JavaApiController{private final RegistrationService service;public JavaApiController(RegistrationService service){this.service=service;}@GetMapping("/health") public String health(){return "CampusConnect Java service is running";}@PostMapping("/registrations/validate") public ValidationResponse validate(@Valid @RequestBody RegistrationValidationRequest request){return service.validate(request);}}
+package edu.campusconnect.controller;
+
+import edu.campusconnect.dto.*;
+import edu.campusconnect.service.RegistrationService;
+import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/java")
+public class JavaApiController {
+  private final RegistrationService service;
+
+  public JavaApiController(RegistrationService service) {
+    this.service = service;
+  }
+
+  @GetMapping("/health")
+  public String health() {
+    return "CampusConnect Java service is running";
+  }
+
+  @PostMapping("/registrations/validate")
+  public ValidationResponse validate(@Valid @RequestBody RegistrationValidationRequest request) {
+    return service.validate(request);
+  }
+}

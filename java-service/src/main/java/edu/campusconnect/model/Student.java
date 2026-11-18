@@ -1,1 +1,25 @@
-package edu.campusconnect.model;public class Student extends User{private final String registerNumber;private final String department;public Student(String id,String name,String email,String registerNumber,String department){super(id,name,email);this.registerNumber=registerNumber;this.department=department;}public String getRegisterNumber(){return registerNumber;}public String getDepartment(){return department;}@Override public String getRole(){return "STUDENT";}}
+package edu.campusconnect.model;
+
+public class Student extends User {
+  private final String registerNumber;
+  private final String department;
+
+  public Student(String id, String name, String email, String registerNumber, String department) {
+    super(id, name, email);
+    this.registerNumber = registerNumber;
+    this.department = department;
+  }
+
+  public String getRegisterNumber() {
+    return registerNumber;
+  }
+
+  public String getDepartment() {
+    return department;
+  }
+
+  @Override
+  public String getRole() {
+    return "STUDENT";
+  }
+}
